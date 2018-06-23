@@ -1,0 +1,56 @@
+Notes:
+- LifeStyle Methods:
+    - componentWillMoint
+        - Runs before initial render
+        - Good spot to set the initial state
+    - componentDidMount
+        - Runs after render  
+        - Component's DOM exists at this point 
+        - Good place to:
+            - Access DOM
+            - Integrate with frameworks
+            - Send AJAX requests
+    - componentWillRecieveProps
+        - When the component is recieving new properties
+            - So when the properties have changed
+            - This does not run on the intial render
+        - This is a place to set the state before the next render
+    - shouldComponentUpdate
+        - Runs immedietly before render and when new peops or state are being recieved by the comoponent
+            - Does not run on the initial render
+        - Exists for performance reasons. 
+            - Sometimes props or states can change, but the component doesn't need to render, as it doesn't affect the DOM. 
+            - In this scenario, returning dalse will void the unnecessary re-renders
+    - componentWillUpdate
+        - Runs immediately before rendering, when new props or states are being recieved
+            - Not called on initial render
+        - Good place to prepare for an update
+            - However the state cannot be changed at this point!
+    - componentDidUpdate
+        - Called after the component's updates are flushed to the DOM
+            - Not called on itiial render
+        - Allows you to work on the component after the component has been updated a rerendered in the DOM
+    - componentWillUnmount
+        - Runs just before a compoent is removed from the DOM
+        - Allows you to perform and necassary cleanup
+            - Destroy any related resources or DOM elements
+
+- Controller views
+    - Top level components
+    - Sets props for all of the child components
+    - Interact with Flux stores?
+    - Recommended to have a single top level Controller
+        - Single access point to the store
+        - Passes data down to it children
+    - Although it is possible to nest Controller Views, it's not recommended
+
+- Route configuration
+    - Route - Declaritively maps a route
+        - Defined throught a route component  
+        - Generally a route for each page in the application
+    - DefaultRoute - This is what's displayed when someone navigates to the route of your application 
+        - e.g. "/" --> "index.html"
+    - NotFoundRoute - Redirect to a 404 page
+    - Redirect - Programattically redirect to a different route
+
+
