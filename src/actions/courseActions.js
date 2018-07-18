@@ -5,7 +5,7 @@ var CourseApi = require("../api/courseApi");
 var ActionTypes = require("../constants/actionTypes");
 
 var CourseActions = { 
-    createAuthor: function(course) { 
+    createCourse: function(course) { 
         var newCourse = CourseApi.saveCourse(course);
 
         Dispatcher.dispatch({
@@ -13,7 +13,7 @@ var CourseActions = {
             course: newCourse
         });
     },
-    updateAuthor: function(course) { 
+    updateCourse: function(course) { 
         var updatedCourse = CourseApi.saveCourse(course);
 
         // Dispatcher tells all of the stores that an course has been created. 
@@ -22,7 +22,7 @@ var CourseActions = {
             course: updatedCourse
         });
     },
-    deleteAuthor: function(id) { 
+    deleteCourse: function(id) { 
        CourseApi.deleteCourse(id);
 
         // Dispatcher tells all of the stores that an course has been created. 
