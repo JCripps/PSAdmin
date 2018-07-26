@@ -61,6 +61,15 @@ var ManageCoursePage = React.createClass({
         });
     },
 
+    setCourseAuthorState: function(author) { 
+        this.state.course.author = author;
+        
+        return this.setState({
+            course: this.state.course,
+            dirty: true
+        });
+    },
+
     saveCourse: function(event) {
         event.preventDefault();
         
@@ -107,6 +116,7 @@ var ManageCoursePage = React.createClass({
             course={this.state.course}
             authors={this.state.authors}
             onChange={this.setCourseState}
+            authorOnChange={this.setCourseAuthorState}
             onSave={this.saveCourse} 
             errors={this.state.errors}/>
         );

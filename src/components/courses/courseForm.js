@@ -7,9 +7,10 @@ var AuthorDropDown = require("../common/authorDropDown");
 var CourseForm = React.createClass({
 	propTypes: {
 		course:	React.PropTypes.object.isRequired,
-        authors: React.PropTypes.object.isRequired,
+        authors: React.PropTypes.array.isRequired,
         onSave:	React.PropTypes.func.isRequired,
-		onChange: React.PropTypes.func.isRequired,
+        onChange: React.PropTypes.func.isRequired,
+        authorOnChange: React.PropTypes.func.isRequired,
 		errors: React.PropTypes.object
 	},
 
@@ -25,7 +26,9 @@ var CourseForm = React.createClass({
                     onChange={this.props.onChange}
                     error={this.props.errors.title}/>
                 
-                <AuthorDropDown authors={this.props.authors} selectedAuthor={this.props.course.author}/>
+                <AuthorDropDown authors={this.props.authors}
+                    authorOnChange={this.props.authorOnChange}
+                    selectedAuthor={this.props.course.author}/>
 
                 <Input name="category"
                     label="Category"

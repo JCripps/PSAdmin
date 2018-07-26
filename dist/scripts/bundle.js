@@ -51662,14 +51662,36 @@ var React = require("react");
 
 var AuthorDropDown = React.createClass({displayName: "AuthorDropDown",
     propTypes: { 
-        authors: React.PropTypes.array.isRequired
+        authors: React.PropTypes.array.isRequired,
+        authorOnChange: React.PropTypes.func.isRequired
+    },
+    
+    getInitialState: function() { 
+        return {
+            selectedAuthor: this.props.selectedAuthor
+        };
     },
 
     createAuthorOption: function(author) { 
-        var selected = author === this.props.selectedAuthor ? "selected" : "";
+        var selected = author.id === this.props.selectedAuthor.id ? "selected" : "";
         return (
-            React.createElement("option", {selected: selected, value: author.id}, author.firstName + " " + author.lastName)
+            React.createElement("option", {key: author.id, value: author.id}, author.firstName + " " + author.lastName)
         );
+    },
+
+    onChange: function(event) { 
+        var authorOption = event.target[event.target.selectedIndex];
+
+        this.state.selectedAuthor = {
+            id: event.target.value,
+            name: authorOption.text
+        };
+
+        this.setState({
+            selectedAuthor: this.state.selectedAuthor
+        });
+
+        this.props.authorOnChange(this.state.selectedAuthor);
     },
 
     render: function() { 
@@ -51677,7 +51699,7 @@ var AuthorDropDown = React.createClass({displayName: "AuthorDropDown",
             React.createElement("div", null, 
                 React.createElement("div", {className: "form-group"}, 
                     React.createElement("label", {htmlFor: "authorDropDown"}, "Author"), 
-                    React.createElement("select", {name: "authorDropDown", className: "form-control"}, 
+                    React.createElement("select", {name: "authorDropDown", className: "form-control", onChange: this.onChange, value: this.props.selectedAuthor.id}, 
                         this.props.authors.map(this.createAuthorOption, this)
                     )
                 )
@@ -51766,9 +51788,10 @@ var AuthorDropDown = require("../common/authorDropDown");
 var CourseForm = React.createClass({displayName: "CourseForm",
 	propTypes: {
 		course:	React.PropTypes.object.isRequired,
-        authors: React.PropTypes.object.isRequired,
+        authors: React.PropTypes.array.isRequired,
         onSave:	React.PropTypes.func.isRequired,
-		onChange: React.PropTypes.func.isRequired,
+        onChange: React.PropTypes.func.isRequired,
+        authorOnChange: React.PropTypes.func.isRequired,
 		errors: React.PropTypes.object
 	},
 
@@ -51784,7 +51807,9 @@ var CourseForm = React.createClass({displayName: "CourseForm",
                     onChange: this.props.onChange, 
                     error: this.props.errors.title}), 
                 
-                React.createElement(AuthorDropDown, {authors: this.props.authors, selectedAuthor: this.props.course.author}), 
+                React.createElement(AuthorDropDown, {authors: this.props.authors, 
+                    authorOnChange: this.props.authorOnChange, 
+                    selectedAuthor: this.props.course.author}), 
 
                 React.createElement(Input, {name: "category", 
                     label: "Category", 
@@ -51970,6 +51995,15 @@ var ManageCoursePage = React.createClass({displayName: "ManageCoursePage",
         });
     },
 
+    setCourseAuthorState: function(author) { 
+        this.state.course.author = author;
+        
+        return this.setState({
+            course: this.state.course,
+            dirty: true
+        });
+    },
+
     saveCourse: function(event) {
         event.preventDefault();
         
@@ -52016,6 +52050,7 @@ var ManageCoursePage = React.createClass({displayName: "ManageCoursePage",
             course: this.state.course, 
             authors: this.state.authors, 
             onChange: this.setCourseState, 
+            authorOnChange: this.setCourseAuthorState, 
             onSave: this.saveCourse, 
             errors: this.state.errors})
         );
@@ -52074,7 +52109,10 @@ module.exports = keyMirror({
     INITIALISE: null,    
     CREATE_AUTHOR: null,
     UPDATE_AUTHOR: null,
-    DELETE_AUTHOR: null
+    DELETE_AUTHOR: null,
+    CREATE_COURSE: null,
+    UPDATE_COURSE: null,
+    DELETE_COURSE: null
 });
 
 },{"react/lib/keyMirror":190}],230:[function(require,module,exports){
@@ -52239,7 +52277,7 @@ Dispatcher.register(function(action) {
             CourseStore.emitChange();
             break;
         case ActionTypes.CREATE_COURSE:
-            _courses.push(action.author);
+            _courses.push(action.course);
             CourseStore.emitChange();
             break;
         case ActionTypes.UPDATE_COURSE:
@@ -52249,8 +52287,8 @@ Dispatcher.register(function(action) {
             CourseStore.emitChange();
             break;
         case ActionTypes.DELETE_COURSE:
-            _.remove(_courses, function(author) {
-				return action.id === author.id;
+            _.remove(_courses, function(course) {
+				return course.id === course.id;
 			});
 			CourseStore.emitChange();
 			break;
