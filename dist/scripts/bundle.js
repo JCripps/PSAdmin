@@ -51848,20 +51848,21 @@ var CourseList = React.createClass({displayName: "CourseList",
 
     deleteCourse: function(id, event) { 
         event.preventDefault(); 
-        Toastr.success("Author Deleted");
+        CourseActions.deleteCourse(id);
+        Toastr.success("Course Deleted");
     },
 
     render: function() { 
         var createCourseRow = function(course) { 
             return (
-                React.createElement("tr", {key: course.title}, 
+                React.createElement("tr", {key: course.id}, 
                     React.createElement("td", null, "Watch"), 
                     React.createElement("td", null, React.createElement(Link, {to: "manageCourse", params: {id: course.id}}, course.title)), 
                     React.createElement("td", null, course.author.name), 
                     React.createElement("td", null, course.category), 
                     React.createElement("td", null, course.length), 
                     /* <td><a href="#" onClick={this.deleteAuthor.bind(this, course.title)}>Delete Author</a></td> */
-                    React.createElement("td", null, React.createElement("a", {href: "#", onClick: this.deleteCourse.bind(this, course.id)}, "Delete Author"))
+                    React.createElement("td", null, React.createElement("a", {href: "#", onClick: this.deleteCourse.bind(this, course.id)}, "Delete Course"))
                 )
             );
         };
@@ -52034,14 +52035,21 @@ var ManageCoursePage = React.createClass({displayName: "ManageCoursePage",
             isValid = false;
         }
 
-        if (this.state.course.length.length < 3) {
-            this.state.errors.length = "The length must be at least 3 characters";
+        if (this.isLengthInvalid()) {
+            this.state.errors.length = "The length is invalid. The length should be hours and minutes, seperated by a colon.";
             isValid = false;
         }
 
         this.setState({errors: this.state.errors});
 
         return isValid;
+    },
+
+    isLengthInvalid: function() { 
+        var lengthRegex = /^\d*:\d{2}/;
+        var length = this.state.course.length;
+
+        return !lengthRegex.test(length);
     },
 
     render: function() { 
@@ -52288,7 +52296,7 @@ Dispatcher.register(function(action) {
             break;
         case ActionTypes.DELETE_COURSE:
             _.remove(_courses, function(course) {
-				return course.id === course.id;
+				return action.id === course.id;
 			});
 			CourseStore.emitChange();
 			break;

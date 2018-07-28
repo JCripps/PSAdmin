@@ -14,20 +14,21 @@ var CourseList = React.createClass({
 
     deleteCourse: function(id, event) { 
         event.preventDefault(); 
-        Toastr.success("Author Deleted");
+        CourseActions.deleteCourse(id);
+        Toastr.success("Course Deleted");
     },
 
     render: function() { 
         var createCourseRow = function(course) { 
             return (
-                <tr key={course.title}>
+                <tr key={course.id}>
                     <td>Watch</td>
                     <td><Link to="manageCourse" params={{id: course.id}}>{course.title}</Link></td>
                     <td>{course.author.name}</td>
                     <td>{course.category}</td>
                     <td>{course.length}</td>
                     {/* <td><a href="#" onClick={this.deleteAuthor.bind(this, course.title)}>Delete Author</a></td> */}
-                    <td><a href="#" onClick={this.deleteCourse.bind(this, course.id)}>Delete Author</a></td>
+                    <td><a href="#" onClick={this.deleteCourse.bind(this, course.id)}>Delete Course</a></td>
                 </tr>
             );
         };

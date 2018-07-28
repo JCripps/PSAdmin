@@ -100,14 +100,21 @@ var ManageCoursePage = React.createClass({
             isValid = false;
         }
 
-        if (this.state.course.length.length < 3) {
-            this.state.errors.length = "The length must be at least 3 characters";
+        if (this.isLengthInvalid()) {
+            this.state.errors.length = "The length is invalid. The length should be hours and minutes, seperated by a colon.";
             isValid = false;
         }
 
         this.setState({errors: this.state.errors});
 
         return isValid;
+    },
+
+    isLengthInvalid: function() { 
+        var lengthRegex = /^\d*:\d{2}/;
+        var length = this.state.course.length;
+
+        return !lengthRegex.test(length);
     },
 
     render: function() { 
